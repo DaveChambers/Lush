@@ -21,7 +21,7 @@ public:
     OutputPanel(AudioProcessorValueTreeState& p) : params(p)
     {
         addAndMakeVisible(dryButton);
-        dryButton.setButtonText("Dry");
+        dryButton.setButtonText("DRY");
         dryButton.setClickingTogglesState(true);
         dryButtonAttachment.reset(new ButtonAttachment(params, Params::idDry, dryButton));
         
@@ -29,7 +29,12 @@ public:
         wetSliderAttachment.reset(new SliderAttachment(params, Params::idWet, wetSlider));
         wetSlider.setSliderStyle(Slider::LinearVertical);
         wetSlider.setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
-        wetSlider.setPopupDisplayEnabled(true, true, this);
+        wetSlider.setPopupDisplayEnabled(true, true, getParentComponent());
+        
+        addAndMakeVisible(wetLabel);
+        wetLabel.setText("Wet", dontSendNotification);
+        wetLabel.setJustificationType(Justification::centred);
+        wetLabel.attachToComponent(&wetSlider, false);
         
     }
 
@@ -47,12 +52,11 @@ public:
         auto bounds = getLocalBounds();
         int padding = 5;
         bounds.reduce(padding, padding);
-        int buttonHeight = bounds.getHeight() / 6;
+        int buttonHeight = 50;
         dryButton.setBounds(bounds.removeFromTop(buttonHeight));
         bounds.removeFromBottom(buttonHeight);
         wetSlider.setBounds(bounds.reduced(0, padding));
     }
-    
     
 
 private:
@@ -61,6 +65,7 @@ private:
     Slider wetSlider;
     typedef AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     std::unique_ptr<SliderAttachment> wetSliderAttachment;
+    Label wetLabel;
     
     TextButton dryButton;
     typedef AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;

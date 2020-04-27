@@ -22,12 +22,17 @@ public:
     inline static const String idWindow = "window";
     inline static const String idSnap = "snap";
     
+    //These must line up with the order in voiceParamIds and voiceParamNames below.
+    //Their integer representation will be used to index for the given String
     enum VoiceParam {
         ENABLED = 0,
         DELAY, // = 1
         GAIN, // = 2
         SELECTED, // = ...
     };
+    
+    inline static String voiceParamIds[] = {"enabled", "delay", "gain", "selected"};
+    inline static String voiceParamNames[] = {"Enabled", "Delay", "Gain", "Selected"};
     
     static String getVoiceParamId(int voiceNumber, VoiceParam param){
         return getVoiceParamIdPrefix(voiceNumber) + voiceParamIds[param];
@@ -43,7 +48,7 @@ public:
         params.push_back( std::make_unique<AudioParameterFloat>("window", "Window", 10.0, 1000.0, 100.0) );
         params.push_back( std::make_unique<AudioParameterBool>("snap", "Snap", false) );
         
-        for (int voice = 0; voice < NUM_VOICES; voice++){
+        for (int voice = 1; voice <= NUM_VOICES; voice++){
             String paramId = getVoiceParamId(voice, ENABLED);
             String paramName = getVoiceParamName(voice, ENABLED);
             params.push_back( std::make_unique<AudioParameterBool>(paramId, paramName, false) );
@@ -65,9 +70,6 @@ public:
     }
         
 private:
-    inline static String voiceParamIds[] = {"enabled", "delay", "gain", "selected"};
-    inline static String voiceParamNames[] = {"Enabled", "Delay", "Gain", "Selected"};
-    
     static String getVoiceParamName(int voiceNumber, VoiceParam param){
         return "Voice " + String(voiceNumber) + voiceParamNames[param];
     }

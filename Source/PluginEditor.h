@@ -38,7 +38,7 @@ private:
     LushAudioProcessor& processor;
     LushLookAndFeel lushLookAndFeel;
     
-    const bool debug = false;
+    const bool debug = true;
     
     std::atomic<float>* bypass;
     

@@ -37,6 +37,9 @@ public:
         auto dryBlock = dsp::AudioBlock<float>(dryBuffer).getSubBlock(0, numSamples);
         dryBlock.copyFrom(inBlock);
         
+        stm::DebugDisplay::set(2, "inBlock Samples: " + String(inBlock.getNumSamples()));
+        stm::DebugDisplay::set(3, "dryBlock Samples: " + String(dryBlock.getNumSamples()));
+        
         dryWetMix.process(context, dryBlock);
         matchedBypass.process(context, dryBlock);
     }
@@ -47,8 +50,11 @@ public:
     }
     
     void parameterChanged(const String& parameterID, float newValue ) override {
+        
+        stm::DebugDisplay::set(1, parameterID + ": " + String(newValue));
+        
         if (parameterID == Params::idDry) {
-            dryWetMix.setDryDecibels(newValue);
+            dryWetMix.setDryLinear(newValue);
         } else if (parameterID == Params::idWet) {
             dryWetMix.setWetDecibels(newValue);
         } else if (parameterID == Params::idBypass) {

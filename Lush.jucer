@@ -15,9 +15,11 @@
       <FILE id="dZajK5" name="LushEngine.h" compile="0" resource="0" file="Source/LushEngine.h"/>
     </GROUP>
     <GROUP id="{9DDDF9B8-CD9D-9403-FE8D-C49E1BF6AD75}" name="GUI">
+      <FILE id="UySHNs" name="MovingSlider.h" compile="0" resource="0" file="Source/MovingSlider.h"/>
       <FILE id="OpCnuA" name="LushLookAndFeel.h" compile="0" resource="0"
             file="Source/LushLookAndFeel.h"/>
       <FILE id="t0N4BW" name="OutputPanel.h" compile="0" resource="0" file="Source/OutputPanel.h"/>
+      <FILE id="yflY2T" name="TimeWindow.h" compile="0" resource="0" file="Source/TimeWindow.h"/>
       <FILE id="KUkuNq" name="TimingPanel.h" compile="0" resource="0" file="Source/TimingPanel.h"/>
       <FILE id="aUP6Y1" name="VoiceEditPanel.h" compile="0" resource="0"
             file="Source/VoiceEditPanel.h"/>
