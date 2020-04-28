@@ -50,20 +50,16 @@ public:
     {
         auto bounds = getLocalBounds();
         
-        bounds.reduce(10, 0);
+        //bounds.reduce(10, 0);
         timeWindow.setBounds(bounds);
         
         bounds.reduce(0, 30);
         for (auto voice=0 ; voice < Params::NUM_VOICES ; voice++){
-            movingSliders[voice]->setBounds(bounds.removeFromLeft(28));
-            bounds.removeFromLeft(20);
+            movingSliders[voice]->resized();
         }
-        
     }
     
     void mouseMove(const MouseEvent& event) override {
-        stm::DebugDisplay::set(7, "Timing Panel X: " + String(event.x));
-        stm::DebugDisplay::set(8, "Timing Panel Y: " + String(event.y));
     }
     
     void mouseEnter(const MouseEvent& event) override {

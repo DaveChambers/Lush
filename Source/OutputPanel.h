@@ -11,6 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "LushLookAndFeel.h"
 
 //==============================================================================
 /*
@@ -44,7 +45,7 @@ public:
 
     void paint (Graphics& g) override
     {
-        
+        g.fillAll(LushLookAndFeel::colourPanel);
     }
 
     void resized() override

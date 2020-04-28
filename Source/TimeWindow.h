@@ -28,6 +28,7 @@ public:
 
     ~TimeWindow()
     {
+        
     }
 
     void paint (Graphics& g) override
@@ -37,19 +38,21 @@ public:
         float timeStart = normalisableRange.getRange().getStart();
         float timeEnd = normalisableRange.getRange().getEnd();
         float time = timeStart;
+        float range = getWidth() - xPadding * 2;
         
         //Draw millisecond ticks
         g.setFont (14.0f);
         g.setColour(Colours::white.withAlpha(0.5f));
         while(time <= timeEnd)
         {
-            float x = normalisableRange.convertTo0to1(time) * getWidth();
+            
+            float x = normalisableRange.convertTo0to1(time) * range + xPadding;
             
             if ( isMultiple(time, 10.0f, 4) )
             {
                 drawTick(g, x, 1.0f, 1.0f);
             } else {
-                //drawTick(g, x, 0.3f, 1.0f);
+                drawTick(g, x, 0.5f, 0.2f);
             }
             
             incrementTime(time);
@@ -61,21 +64,21 @@ public:
         for (const int& note : notes){
             float noteDuration = stm::Notes::ms(note, timeSignatureDenominator, bpm);
             if (noteDuration < timeEnd && noteDuration > timeStart){
-                float x = normalisableRange.convertTo0to1(noteDuration) * getWidth();
+                float x = normalisableRange.convertTo0to1(noteDuration) * range + xPadding;
                 drawTick(g, x, 1.0f, 1.0f);
             }
             
 //            //dotted
 //            noteDuration = stm::Notes::msDotted(note, timeSignatureDenominator, bpm);
 //            if (noteDuration < timeEnd && noteDuration > timeStart){
-//                float x = normalisableRange.convertTo0to1(noteDuration) * getWidth();
+//                float x = normalisableRange.convertTo0to1(noteDuration) * range + xPadding;
 //                drawTick(g, x, 0.5f, 0.5f);
 //            }
 //
 //            //triplets
 //            noteDuration = stm::Notes::msTriplet(note, timeSignatureDenominator, bpm);
 //            if (noteDuration < timeEnd && noteDuration > timeStart){
-//                float x = normalisableRange.convertTo0to1(noteDuration) * getWidth();
+//                float x = normalisableRange.convertTo0to1(noteDuration) * range + xPadding;
 //                drawTick(g, x, 0.5f, 0.5f);
 //            }
         }
@@ -86,7 +89,7 @@ public:
         time = timeStart;
         g.setColour(Colours::white.withAlpha(0.8f));
         while(time <= timeEnd){
-            float x = normalisableRange.convertTo0to1(time) * getWidth();
+            float x = normalisableRange.convertTo0to1(time) * range + xPadding;
             if ( isMultiple(time, 10.0f, 4) )
             {
                 String text = String((int)time) + "ms";
@@ -101,7 +104,7 @@ public:
             float noteDuration = stm::Notes::ms(note, timeSignatureDenominator, bpm);
             if (noteDuration < timeEnd && noteDuration > timeStart){
                 String text = "1/" + String(note);
-                float x = normalisableRange.convertTo0to1(noteDuration) * getWidth();
+                float x = normalisableRange.convertTo0to1(noteDuration) * range + xPadding;
                 labelTick(g, x, text, Justification::centredBottom);
             }
         }
@@ -122,9 +125,10 @@ public:
 
 private:
     bool showNotes = true;
-    NormalisableRange<float> normalisableRange = NormalisableRange<float>(5.0f, 1500.0f);
+    NormalisableRange<float> normalisableRange = NormalisableRange<float>(1.0f, 1000.0f);
     float bpm = 120.0f;
     int timeSignatureDenominator = 4;
+    int xPadding = 40;
     
     bool isMultiple(float value, float multiple, int maxMultiplications)
     {
@@ -177,7 +181,7 @@ private:
         float lineLength = height * length;
         
         g.drawLine(x, 0.0f, x, lineLength, thickness);
-        //g.drawLine(x, height - lineLength, x, height, thickness);
+        g.drawLine(x, height - lineLength, x, height, thickness);
     }
     
     void labelTick(Graphics& g, float x, String text, Justification justification){

@@ -26,7 +26,7 @@ public:
         Typeface::Ptr tface = Typeface::createSystemTypefaceFor(BinaryData::MontserratThin_ttf, BinaryData::MontserratThin_ttfSize);
         setDefaultSansSerifTypeface (tface);
         LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypeface(tface);
-        //LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypefaceName("Avenir Light");
+        LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypefaceName("Avenir Light");
     }
     
     //==============================================================================
@@ -82,7 +82,7 @@ public:
         colourAccent = Colour::fromHSV(109.0f/360.0f, 50.0f/100.0f, 90.0f/100.0f, 0xff),
         colourBackground = Colours::black,
         colourFont = Colour::fromHSV(0.0f, 0.0f, 0.8, 1.0),
-        colourPanel = Colour::fromHSV(0.0f, 0.0f, 42.0f/100.0f, 0xff),
+        colourPanel = Colour::fromHSV(0.0f, 0.0f, 30.0f/100.0f, 0xff),
         colourRotary = Colour::fromHSV(0.0f, 0.0f, 70.0f/100.0f, 0xff),
         colourOff = Colour::fromHSV(0.0f, 0.0f, 0.45, 0x11)
     ;
