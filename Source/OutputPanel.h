@@ -36,7 +36,6 @@ public:
         wetLabel.setText("Wet", dontSendNotification);
         wetLabel.setJustificationType(Justification::centred);
         wetLabel.attachToComponent(&wetSlider, false);
-        
     }
 
     ~OutputPanel()
@@ -50,12 +49,15 @@ public:
 
     void resized() override
     {
-        auto bounds = getLocalBounds();
+        int labelHeight = 30;
         int padding = 5;
-        bounds.reduce(padding, padding);
         int buttonHeight = 50;
+        
+        auto bounds = getLocalBounds();
+        bounds.reduce(padding, padding);
         dryButton.setBounds(bounds.removeFromTop(buttonHeight));
         bounds.removeFromBottom(buttonHeight);
+        bounds.removeFromTop(labelHeight);
         wetSlider.setBounds(bounds.reduced(0, padding));
     }
     

@@ -3,7 +3,7 @@
 <JUCERPROJECT id="p8JRO1" name="Lush" projectType="audioplug" jucerVersion="5.4.7"
               cppLanguageStandard="17" companyName="Sailing To Mars" companyWebsite="sailingtomars.com"
               companyEmail="spenser0saling@gmail.com" pluginFormats="buildAU,buildVST3"
-              pluginDesc="A Chorus/Delay/Reverb Plugin" pluginChannelConfigs="{1, 1}, {2, 2}"
+              pluginDesc="A Chorus/Delay/Reverb Plugin" pluginChannelConfigs="{2, 2}"
               pluginVST3Category="Delay,Fx,Modulation,Reverb">
   <MAINGROUP id="yAqFLy" name="Lush">
     <FILE id="J0Cjat" name="Montserrat-ExtraLight.ttf" compile="0" resource="1"
@@ -12,6 +12,7 @@
           file="Fonts/Montserrat/Montserrat-Thin.ttf"/>
     <GROUP id="{5A8AEA80-A019-907E-E9DB-E626A41804FD}" name="Processor">
       <FILE id="DvQOly" name="HighLowFilter.h" compile="0" resource="0" file="Source/HighLowFilter.h"/>
+      <FILE id="ydzPDP" name="LushDelayLine.h" compile="0" resource="0" file="Source/LushDelayLine.h"/>
       <FILE id="dZajK5" name="LushEngine.h" compile="0" resource="0" file="Source/LushEngine.h"/>
     </GROUP>
     <GROUP id="{9DDDF9B8-CD9D-9403-FE8D-C49E1BF6AD75}" name="GUI">

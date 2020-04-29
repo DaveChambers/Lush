@@ -12,46 +12,66 @@
 
 #include <JuceHeader.h>
 #include "Params.h"
+#include "LushDelayLine.h"
 
-class LushEngine: public dsp::ProcessorBase, public AudioProcessorValueTreeState::Listener {
+class LushEngine: public AudioProcessorValueTreeState::Listener {
 public:
-    LushEngine(AudioProcessorValueTreeState& p) : parameters(p)
+    LushEngine(AudioProcessorValueTreeState& s) : state(s)
     {
-        parameters.addParameterListener(Params::idDry, this);
-        parameters.addParameterListener(Params::idWet, this);
-        parameters.addParameterListener(Params::idBypass, this);
+        state.addParameterListener(Params::idDry, this);
+        state.addParameterListener(Params::idWet, this);
+        state.addParameterListener(Params::idBypass, this);
+        
+        for (auto voice=1 ; voice <= Params::NUM_VOICES ; voice++)
+        {
+            delayLines.add(new LushDelayLine(state, voice));
+        }
     }
     
-    void prepare(const dsp::ProcessSpec& spec) override {
+    void prepare(const dsp::ProcessSpec& spec) {
         dryWetMix.prepare(spec);
         matchedBypass.prepare(spec);
         dryBuffer.setSize(spec.numChannels, spec.maximumBlockSize);
         
+        for (auto voice=1 ; voice <= Params::NUM_VOICES ; voice++)
+        {
+            delayLines[voice-1]->prepare(spec);
+        }
+        
         updateParameters();
     }
     
-    void process(const dsp::ProcessContextReplacing<float>& context) override {
+    void process(AudioBuffer<float>& buffer) {
         // Create a copy of the input block to use as the dry signal.
-        auto inBlock = context.getInputBlock();
-        size_t numSamples = inBlock.getNumSamples();
+        auto outBlock = juce::dsp::AudioBlock<float> (buffer);
+        
+        //Lush is designed as a stereo delay and only processes 2 buffers.
+        jassert(outBlock.getNumChannels() == 2);
+        
+        auto numSamples = outBlock.getNumSamples();
         auto dryBlock = dsp::AudioBlock<float>(dryBuffer).getSubBlock(0, numSamples);
-        dryBlock.copyFrom(inBlock);
+        dryBlock.copyFrom(outBlock);
+        outBlock.clear();
         
-        stm::DebugDisplay::set(2, "inBlock Samples: " + String(inBlock.getNumSamples()));
-        stm::DebugDisplay::set(3, "dryBlock Samples: " + String(dryBlock.getNumSamples()));
+        for (auto voice=1 ; voice <= Params::NUM_VOICES ; voice++)
+        {
+            delayLines[voice-1]->process(dryBlock, outBlock);
+        }
         
-        dryWetMix.process(context, dryBlock);
-        matchedBypass.process(context, dryBlock);
+        dryWetMix.process(dryBlock, outBlock);
+        matchedBypass.process(dryBlock, outBlock);
     }
     
-    void reset() override {
+    void reset() {
+        for (auto voice=1 ; voice <= Params::NUM_VOICES ; voice++)
+        {
+            delayLines[voice-1]->reset();
+        }
         dryWetMix.reset();
         matchedBypass.reset();
     }
     
-    void parameterChanged(const String& parameterID, float newValue ) override {
-        
-        stm::DebugDisplay::set(1, parameterID + ": " + String(newValue));
+    void parameterChanged(const String& parameterID, float newValue ) {
         
         if (parameterID == Params::idDry) {
             dryWetMix.setDryLinear(newValue);
@@ -63,15 +83,17 @@ public:
     }
     
 private:
-    AudioProcessorValueTreeState& parameters;
+    AudioProcessorValueTreeState& state;
     stm::DryWetMix dryWetMix;
     stm::MatchedBypass matchedBypass;
     
     AudioSampleBuffer dryBuffer;
     
+    OwnedArray<LushDelayLine> delayLines;
+    
     void updateParameters(){
-        dryWetMix.setDryDecibels(*parameters.getRawParameterValue(Params::idDry));
-        dryWetMix.setWetDecibels(*parameters.getRawParameterValue(Params::idWet));
-        matchedBypass.setActive(*parameters.getRawParameterValue(Params::idBypass));
+        dryWetMix.setDryDecibels(*state.getRawParameterValue(Params::idDry));
+        dryWetMix.setWetDecibels(*state.getRawParameterValue(Params::idWet));
+        matchedBypass.setActive(*state.getRawParameterValue(Params::idBypass));
     }
 };

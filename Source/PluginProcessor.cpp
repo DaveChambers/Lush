@@ -156,10 +156,7 @@ void LushAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& m
 //    AudioPlayHead::CurrentPositionInfo playposinfo;
 //    phead->getCurrentPosition(playposinfo);
 //    }
-    
-    auto block = juce::dsp::AudioBlock<float> (buffer);
-    auto context = juce::dsp::ProcessContextReplacing<float> (block);
-    lushEngine.process(context);
+    lushEngine.process(buffer);
 }
 
 //==============================================================================

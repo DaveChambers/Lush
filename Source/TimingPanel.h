@@ -21,12 +21,15 @@
 class TimingPanel    : public Component //, public MovingSlider::Listener //, public AudioProcessorValueTreeState::Listener, AsyncUpdater
 {
 public:
-    TimingPanel(AudioProcessorValueTreeState& p) : params(p)
+    TimingPanel(AudioProcessorValueTreeState& s) : state(s)
     {
         addAndMakeVisible(timeWindow);
+        auto idDelay = Params::getVoiceParamId(1, Params::DELAY);
+        auto delayRange = state.getParameterRange(idDelay);
+        timeWindow.setNormalisableRange(delayRange);
         
         for (auto voice=1 ; voice <= Params::NUM_VOICES ; voice++){
-            MovingSlider* newMovingSlider = new MovingSlider(*this);
+            MovingSlider* newMovingSlider = new MovingSlider(*this, state, voice);
             addAndMakeVisible(newMovingSlider);
             newMovingSlider->setEnabled(true);
             newMovingSlider->addMouseListener(this, false);
@@ -50,10 +53,9 @@ public:
     {
         auto bounds = getLocalBounds();
         
-        //bounds.reduce(10, 0);
         timeWindow.setBounds(bounds);
         
-        bounds.reduce(0, 30);
+        bounds.reduce(0, 40);
         for (auto voice=0 ; voice < Params::NUM_VOICES ; voice++){
             movingSliders[voice]->resized();
         }
@@ -78,7 +80,7 @@ public:
     }
 
 private:
-    AudioProcessorValueTreeState& params;
+    AudioProcessorValueTreeState& state;
     
     TimeWindow timeWindow;
     OwnedArray<MovingSlider> movingSliders;
@@ -89,131 +91,3 @@ private:
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimingPanel)
 };
-
-
-
-
-
-//struct AttachedControlBase  : public AudioProcessorValueTreeState::Listener,
-//                              public AsyncUpdater
-//{
-//    AttachedControlBase (AudioProcessorValueTreeState& s, const String& p)
-//        : state (s), paramID (p), lastValue (0)
-//    {
-//        state.addParameterListener (paramID, this);
-//    }
-//
-//    void removeListener()
-//    {
-//        state.removeParameterListener (paramID, this);
-//    }
-//
-//    void setNewDenormalisedValue (float newDenormalisedValue)
-//    {
-//        if (auto* p = state.getParameter (paramID))
-//        {
-//            const float newValue = state.getParameterRange (paramID)
-//                                        .convertTo0to1 (newDenormalisedValue);
-//
-//            if (p->getValue() != newValue)
-//                p->setValueNotifyingHost (newValue);
-//        }
-//    }
-//
-//    void sendInitialUpdate()
-//    {
-//        if (auto* v = state.getRawParameterValue (paramID))
-//            parameterChanged (paramID, *v);
-//    }
-//
-//    void parameterChanged (const String&, float newValue) override
-//    {
-//        lastValue = newValue;
-//
-//        if (MessageManager::getInstance()->isThisTheMessageThread())
-//        {
-//            cancelPendingUpdate();
-//            setValue (newValue);
-//        }
-//        else
-//        {
-//            triggerAsyncUpdate();
-//        }
-//    }
-//
-//    void beginParameterChange()
-//    {
-//
-//        if (auto* p = state.getParameter (paramID))
-//        {
-//            if (state.undoManager != nullptr)
-//                state.undoManager->beginNewTransaction();
-//
-//            p->beginChangeGesture();
-//        }
-//    }
-//
-//    void endParameterChange()
-//    {
-//        if (AudioProcessorParameter* p = state.getParameter (paramID))
-//            p->endChangeGesture();
-//    }
-//
-//    void handleAsyncUpdate() override
-//    {
-//        setValue (lastValue);
-//    }
-//
-//    virtual void setValue (float) = 0;
-//
-//    AudioProcessorValueTreeState& state;
-//    String paramID;
-//    float lastValue;
-//
-//    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AttachedControlBase)
-//};
-//
-//struct AudioProcessorValueTreeState::ButtonAttachment::Pimpl  : private AttachedControlBase,
-//                                                                private Button::Listener
-//{
-//    Pimpl (AudioProcessorValueTreeState& s, const String& p, Button& b)
-//        : AttachedControlBase (s, p), button (b), ignoreCallbacks (false)
-//    {
-//        sendInitialUpdate();
-//        button.addListener (this);
-//    }
-//
-//    ~Pimpl() override
-//    {
-//        button.removeListener (this);
-//        removeListener();
-//    }
-//
-//    void setValue (float newValue) override
-//    {
-//        const ScopedLock selfCallbackLock (selfCallbackMutex);
-//
-//        {
-//            ScopedValueSetter<bool> svs (ignoreCallbacks, true);
-//            button.setToggleState (newValue >= 0.5f, sendNotificationSync);
-//        }
-//    }
-//
-//    void buttonClicked (Button* b) override
-//    {
-//        const ScopedLock selfCallbackLock (selfCallbackMutex);
-//
-//        if (! ignoreCallbacks)
-//        {
-//            beginParameterChange();
-//            setNewDenormalisedValue (b->getToggleState() ? 1.0f : 0.0f);
-//            endParameterChange();
-//        }
-//    }
-//
-//    Button& button;
-//    bool ignoreCallbacks;
-//    CriticalSection selfCallbackMutex;
-//
-//    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pimpl)
-//};

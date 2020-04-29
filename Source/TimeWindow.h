@@ -50,9 +50,9 @@ public:
             
             if ( isMultiple(time, 10.0f, 4) )
             {
-                drawTick(g, x, 1.0f, 1.0f);
+                drawTick(g, x, 1.0f, getHeight());
             } else {
-                drawTick(g, x, 0.5f, 0.2f);
+                drawTick(g, x, 0.5f, 35);
             }
             
             incrementTime(time);
@@ -65,7 +65,7 @@ public:
             float noteDuration = stm::Notes::ms(note, timeSignatureDenominator, bpm);
             if (noteDuration < timeEnd && noteDuration > timeStart){
                 float x = normalisableRange.convertTo0to1(noteDuration) * range + xPadding;
-                drawTick(g, x, 1.0f, 1.0f);
+                drawTick(g, x, 1.0f, getHeight());
             }
             
 //            //dotted
@@ -121,6 +121,7 @@ public:
     }
     void setNormalisableRange(NormalisableRange<float> newRange){
         normalisableRange = newRange;
+        repaint();
     }
 
 private:
@@ -178,7 +179,7 @@ private:
     
     void drawTick(Graphics& g, float x, float thickness, float length){
         float height = getHeight();
-        float lineLength = height * length;
+        float lineLength = length;
         
         g.drawLine(x, 0.0f, x, lineLength, thickness);
         g.drawLine(x, height - lineLength, x, height, thickness);
