@@ -43,20 +43,22 @@ public:
         //LushDelayLine is only designed to handle stereo input.
         jassert(outBlock.getNumChannels() == 2);
         
-        for (auto sampleIndex = 0 ; sampleIndex < dryBlock.getNumSamples() ; sampleIndex++)
-        {
-            bufferL.push(dryBlock.getSample(0, sampleIndex));
-            bufferR.push(dryBlock.getSample(1, sampleIndex));
-            
-            float gain = gainRamper.getNext();
-            float delaySampleL = bufferL.getSample(int(*delay * samplesPerMS));
-            float delaySampleR = bufferR.getSample(int(*delay * samplesPerMS));
-            
-            outBlock.addSample(0, sampleIndex, delaySampleL * gain);
-            outBlock.addSample(1, sampleIndex, delaySampleR * gain);
-            
-            bufferL.increment();
-            bufferR.increment();
+        if (*isEnabled > 0.5f){
+            for (auto sampleIndex = 0 ; sampleIndex < dryBlock.getNumSamples() ; sampleIndex++)
+            {
+                bufferL.push(dryBlock.getSample(0, sampleIndex));
+                bufferR.push(dryBlock.getSample(1, sampleIndex));
+                
+                float gain = gainRamper.getNext();
+                float delaySampleL = bufferL.getSample(int(*delay * samplesPerMS));
+                float delaySampleR = bufferR.getSample(int(*delay * samplesPerMS));
+                
+                outBlock.addSample(0, sampleIndex, delaySampleL * gain);
+                outBlock.addSample(1, sampleIndex, delaySampleR * gain);
+                
+                bufferL.increment();
+                bufferR.increment();
+            }
         }
     }
         

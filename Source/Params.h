@@ -48,8 +48,11 @@ public:
         auto delayRange = NormalisableRange<float>(MAX_MOD_MS, MAX_DELAY_MS);
         delayRange.setSkewForCentre(DELAY_CENTRE);
         
+        auto gainRange = NormalisableRange<float>(-100.0f, 0.0f);
+        gainRange.setSkewForCentre(-18.0f);
+        
         params.push_back( std::make_unique<AudioParameterBool>("dry", "Dry Enabled", true) );
-        params.push_back( std::make_unique<AudioParameterFloat>("wet", "Wet dB", -100.0f, 12.0f, 0.0f) );
+        params.push_back( std::make_unique<AudioParameterFloat>("wet", "Wet dB", gainRange, 0.0f) );
         params.push_back( std::make_unique<AudioParameterBool>("bypass", "Matched Bypass", false) );
         params.push_back( std::make_unique<AudioParameterBool>("snap", "Snap", false) );
         
@@ -64,7 +67,7 @@ public:
             
             paramId = getVoiceParamId(voice, GAIN);
             paramName = getVoiceParamName(voice, GAIN);
-            params.push_back( std::make_unique<AudioParameterFloat>(paramId, paramName, -100.0f, 0.0f, 0.0f) );
+            params.push_back( std::make_unique<AudioParameterFloat>(paramId, paramName, gainRange, 0.0f) );
         }
         
         return { params.begin(), params.end() };

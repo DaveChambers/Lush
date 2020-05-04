@@ -123,7 +123,7 @@ public:
     
     void valueUpdated(stm::ParameterAttachment* attachment, float newValue) override {
         if (attachment == &gainAttachment){
-            yRatio = yRange.convertTo0to1(newValue);
+            yRatio = 1 - yRange.convertTo0to1(newValue);
         } else if (attachment == &delayAttachment){
             xRatio = xRange.convertTo0to1(newValue);
         } else if (attachment == &enabledAttachment){
@@ -169,7 +169,11 @@ private:
     
     
     float getXValue(){ return xRange.convertFrom0to1(xRatio); }
-    float getYValue(){ return yRange.convertFrom0to1(yRatio); }
+    float getYValue(){
+        stm::DebugDisplay::set(2, "YValue: " + String(yRange.convertFrom0to1(1 - yRatio)));
+        stm::DebugDisplay::set(3, "yRatio: " + String(1 - yRatio));
+        return yRange.convertFrom0to1(1 - yRatio);
+    }
     float getXRange(){ return parent.getWidth() - xPadding * 2; }
     float getYRange(){ return getHeight() - outerRadius * 2; }
     float getXPixels(){ return xPadding + getXRange() * xRatio; }
@@ -209,7 +213,7 @@ private:
             listener->xChanged(getXValue());
         }
         
-        delayAttachment.setValue(xRange.convertFrom0to1(xRatio));
+        delayAttachment.setValue(getXValue());
         
         repaint();
     }
@@ -225,7 +229,7 @@ private:
             listener->yChanged(getYValue());
         }
         
-        gainAttachment.setValue(yRange.convertFrom0to1(yRatio));
+        gainAttachment.setValue(getYValue());
         
         repaint();
     }

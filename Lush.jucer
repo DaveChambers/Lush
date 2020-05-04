@@ -4,7 +4,7 @@
               cppLanguageStandard="17" companyName="Sailing To Mars" companyWebsite="sailingtomars.com"
               companyEmail="spenser0saling@gmail.com" pluginFormats="buildAU,buildVST3"
               pluginDesc="A Chorus/Delay/Reverb Plugin" pluginChannelConfigs="{2, 2}"
-              pluginVST3Category="Delay,Fx,Modulation,Reverb">
+              pluginVST3Category="Delay,Fx,Modulation,Reverb" version="0.50">
   <MAINGROUP id="yAqFLy" name="Lush">
     <FILE id="J0Cjat" name="Montserrat-ExtraLight.ttf" compile="0" resource="1"
           file="Fonts/Montserrat/Montserrat-ExtraLight.ttf"/>

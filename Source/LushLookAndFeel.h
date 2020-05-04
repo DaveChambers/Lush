@@ -72,12 +72,6 @@ public:
         }
     }
     
-    Typeface::Ptr getTypefaceForFont(const Font& f) override
-    {
-        static Typeface::Ptr myFont = Typeface::createSystemTypefaceFor(BinaryData::MontserratThin_ttf, BinaryData::MontserratThin_ttfSize);
-        return myFont;
-    }
-
     inline static const Colour
         colourAccent = Colour::fromHSV(109.0f/360.0f, 50.0f/100.0f, 90.0f/100.0f, 0xff),
         colourBackground = Colours::black,
